@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -14,7 +15,9 @@ class UsersController extends Controller
     public function index()
     {
         //
-        return view('users.index');
+        return view('users.index', [
+            'users'=>User::paginate(10)
+        ]);
     }
 
     /**
@@ -25,6 +28,7 @@ class UsersController extends Controller
     public function create()
     {
         //
+        return view('users.create');
     }
 
     /**
@@ -36,6 +40,11 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'usrname' => ['required'],
+            'email' =>  ['required', 'email'],
+            'usrPassword' => ['required','string', 'min:3','confirmed']
+        ]);
     }
 
     /**
@@ -47,6 +56,10 @@ class UsersController extends Controller
     public function show($id)
     {
         //
+        $user = User::findOrFail($id);
+        return view('users.show', [
+            'user' => $user
+        ]);
     }
 
     /**
